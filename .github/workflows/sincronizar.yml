@@ -1,0 +1,61 @@
+
+name: Actualizar material del profesor
+
+on:
+  # Ejecutar todos los días a las 09:15 (Madrid)
+  schedule:
+    - cron: '15 9 * * *'
+      timezone: 'Europe/Madrid'
+
+  # Permitir ejecutarlo manualmente desde GitHub
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Descargar nuestro fork con todo el historial
+      - name: Descargar fork
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Consultar profesor y sincronizar
+        shell: bash
+        run: |
+          # Recordar la versión anterior
+          ANTES=$(git rev-parse HEAD)
+
+          # Descargar novedades del profesor
+          git remote add upstream https://github.com/avidaldo/ai.git
+          git fetch upstream main
+
+          # Integrar sin sobrescribir cambios propios
+          git merge --no-edit upstream/main
+
+          DESPUES=$(git rev-parse HEAD)
+
+          # Generar informe en GitHub Actions
+          echo "## Actualización del curso" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$ANTES" = "$DESPUES" ]; then
+            echo "Sin novedades." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### Archivos actualizados" >> "$GITHUB_STEP_SUMMARY"
+            echo '```text' >> "$GITHUB_STEP_SUMMARY"
+            git diff --name-status "$ANTES" "$DESPUES" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+            # Publicar las novedades en nuestro fork
+            git push origin main
+          fi
