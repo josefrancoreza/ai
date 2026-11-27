@@ -8,7 +8,7 @@ The path is a basic overview of the steps that almost every model needs, read af
 
 | # | Tier | Item | Content |
 | --- | --- | --- | --- |
-| 1 | standard | [Missing values](missing_values.ipynb) | Why a value is missing changes what you can do about it; dropping, filling with a statistic, flagging, filling from similar rows or from the other columns, leaving it to the model; what each choice assumes |
+| 1 | standard | [Missing values](missing_values.ipynb) | Why a value is missing changes what you can do about it; missing values hidden as 0 or "?", and values that don't exist rather than unknown; leaving them to the model, filling with a statistic, flagging, dropping columns or rows; what each choice assumes |
 | 2 | standard | [Encoding categories](categorical_encoding.ipynb) | Ordinal and one-hot encoding, and when each one is wrong; categories that appear only in new data; categories with many values: grouping the rare ones and target encoding |
 | 3 | standard | [Scaling numerical features](feature_scaling.ipynb) | Which models need scaling and why (distances, gradients, penalties), and which don't (trees); min-max, standard, robust and max-abs scaling compared on the same column; scaling the target |
 | | deep dive | [Outliers and capped values](complementary/outliers.ipynb) | An error, a rare case or a different population; rules for finding them and why the usual one is fooled by the outliers themselves; capped values, which are not outliers; keeping, clipping, transforming or flagging |
